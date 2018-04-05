@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1521239654 source:/media/Home/Google_Drive/UNIFESP/11-SEMESTRE/C.G/CODES-CG/teste-second-cg/main.c
+	<stdio.h>
+	<stdlib.h>
+	<GL/glut.h>
+	"Display.h"
+
+1521237900 /media/Home/Google_Drive/UNIFESP/11-SEMESTRE/C.G/CODES-CG/teste-second-cg/Display.h
+	<GL/glut.h>
+

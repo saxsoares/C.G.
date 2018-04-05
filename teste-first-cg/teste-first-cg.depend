@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1520643850 source:/media/Home/Google_Drive/UNIFESP/11-SEMESTRE/C.G/CODES-CG/teste-first-cg/main.c
+	<GL/glut.h>
+	<math.h>
+
