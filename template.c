@@ -84,7 +84,8 @@ void Timer(int extra){
 
 void Desenha(){
     InitScreen();
-        glBegin()
+        glBegin(GL_POINTS);
+        glEnd();
     glutPostRedisplay();
     glutSwapBuffers();
     glFlush();
