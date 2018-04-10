@@ -27,7 +27,7 @@ GLint sw, sh, winPosX, winPosY;
 GLfloat w_width, w_height;
 GLfloat mouseX, mouseY, mouseClickX, mouseClickY;
 
-GLfloat rot_pet, rot_roda, transl_car;
+GLfloat rot_pet=0, rot_roda=0, transl_car=0, brEsq=0, brDIr=0, antEsq=0, antDir=0;
 
 void FitWindow(GLsizei w, GLsizei h){
      if (w >= h)
@@ -89,7 +89,17 @@ void Keyboard (unsigned char key, int x, int y){
         case 'd' :  rot_roda -= 2.5;
                     transl_car += 0.005;
                     break;
-        default :  break;
+        case 'q' :  brEsq = brEsq <= 9.0 ? brEsq + 1: brEsq;  break;
+        case 'Q' :  brEsq = brEsq >= -113.0 ? brEsq - 1: brEsq;  break;
+        case 'e' :  brDIr = brDIr <= 81.0 ? brDIr + 1: brDIr;  break;
+        case 'E' :  brDIr = brDIr >= -48.0 ? brDIr - 1: brDIr;;  break;
+        case 'z' :  antEsq = antEsq <= 93.0 ? antEsq + 1: antEsq;;  break;
+        case 'Z' :  antEsq = antEsq >= -120.0 ? antEsq - 1: antEsq;;  break;
+        case 'c' :  antDir = antDir <= 208.0 ? antDir + 1: antDir;;  break;
+        case 'C' :  antDir = antDir >= 0.0 ? antDir - 1: antDir;;  break;
+        default :
+        printf("BE: %.1f - BD: %.1f - AE: %.1f - AD: %.1f\n", brEsq, brDIr, antEsq, antDir);
+        break;
     }
     glutPostRedisplay() ;
 }
@@ -191,12 +201,117 @@ void carro(){
     glPopMatrix();
 }
 void robo(){
+    int i; float angulo;
+    glPushMatrix();
+    glTranslatef(0,-.6,0);
+    glScalef(1,1,1);
+    glBegin(GL_LINE_LOOP);
+        glVertex2f(  0 , 0);
+        glVertex2f(-.1 , 0);
+        glVertex2f(-.15,.25);
+        glVertex2f(-.05,.3);
+        glVertex2f( .05,.3);
+        glVertex2f( .15,.25);
+        glVertex2f( .1 , 0);
+    glEnd();
+    //Head
+    glBegin(GL_LINE_LOOP);
+        glVertex2f( .05,.3);
+        glVertex2f( .05,.4);
+        for (i=0;i<=30;i++) {
+            angulo= 2 * PI * i / 60.0;
+            glVertex2f(0.05*cos(angulo), 0.05*sin(angulo)+.4);
+        }
+        glVertex2f(-.05,.3);
+    glEnd();
+    glBegin(GL_LINE_LOOP);
+        for (i=0;i<=60;i++) {
+            angulo= 2 * PI * i / 60.0;
+            glVertex2f(0.015*cos(angulo)-.025, 0.015*sin(angulo)+.375);
+        }
+    glEnd();
+    glBegin(GL_LINE_LOOP);
+        for (i=0;i<=60;i++) {
+            angulo= 2 * PI * i / 60.0;
+            glVertex2f(0.015*cos(angulo)+.025, 0.015*sin(angulo)+.375);
+        }
+    glEnd();
+    glBegin(GL_LINES);
+    glLineWidth(3.0);
+        glVertex2f(.025,.335);
+        glVertex2f(-.025,.335);
+    glEnd();
+    glPopMatrix();
+    // Articulacoes
+    glPolygonMode(GL_FRONT, GL_FILL);
+    glPushMatrix();
+    glTranslatef(0,-.6,0);
+    glBegin(GL_POLYGON);
+        for (i=0;i<=60;i++) {
+            angulo= 2 * PI * i / 60.0;
+            glVertex2f(0.03*cos(angulo)-.144, 0.03*sin(angulo)+.22);
+        }
+    glEnd();
+    glBegin(GL_POLYGON);
+        for (i=0;i<=60;i++) {
+            angulo= 2 * PI * i / 60.0;
+            glVertex2f(0.03*cos(angulo)+.144, 0.03*sin(angulo)+.22);
+        }
+    glEnd();
+    glPopMatrix();
+    // Bracos
+    glPushMatrix();
+        glPushMatrix();
+        glTranslatef(-.144,-.38,0);
+        glRotatef(brEsq+68,0,0,1);
+            glPolygonMode(GL_FRONT, GL_FILL);
+            glBegin(GL_POLYGON);
+            for (i=0;i<=60;i++) {
+                angulo= 2 * PI * i / 60.0;
+                glVertex2f(0.03*cos(angulo)-.1, 0.03*sin(angulo));
+            }
+            glEnd();
+            glPolygonMode(GL_FRONT, GL_LINE);
+            glRectf(0,.03,-.1,-.03);
+            glPushMatrix();
+                glTranslatef(-.1,0,0);
+                glRotatef(antEsq+10, 0, 0, 1);
+                glTranslatef(.1,0,0);
+                glRectf(-.1,.03, -.2, -.03);
+                glRectf(-.2, .035, -.25, -.035);
+            glPopMatrix();
+        glPopMatrix();
+        glRotatef(180,0,1,0);
+        glPushMatrix();
+        glTranslatef(-.144,-.38,0);
+        glRotatef(brDIr+2,0,0,1);
+            glPolygonMode(GL_BACK, GL_FILL);
+            glBegin(GL_POLYGON);
+            for (i=0;i<=60;i++) {
+                angulo= 2 * PI * i / 60.0;
+                glVertex2f(0.03*cos(angulo)-.1, 0.03*sin(angulo));
+            }
+            glEnd();
+            glPolygonMode(GL_BACK, GL_LINE);
+            glRectf(0,.03,-.1,-.03);
+            glPushMatrix();
+                glTranslatef(-.1,0,0);
+                glRotatef(antDir-110, 0, 0, 1);
+                glTranslatef(.1,0,0);
+                glRectf(-.1,.03, -.2, -.03);
+                glRectf(-.2, .035, -.25, -.035);
+            glPopMatrix();
+        glPopMatrix();
+    glPopMatrix();
 }
 void Desenha(){
     glClear(GL_COLOR_BUFFER_BIT);
-        Msg("'R' para rotacionar petalas", -.99, .95);
+        Msg("'R'/'r' para rotacionar petalas", -.99, .95);
         Msg("'A' e 'D' para movimentar o carro", -.99, .90);
-
+        Msg("'Q'/'q' para movimentar braço esq", -.99, .85);
+        Msg("'Z'/'z' para movimentar antebraço esq", -.99, .80);
+        Msg("'E'/'e' para movimentar braço dir", -.99, .75);
+        Msg("'C'/'c' para movimentar antebraço dir", -.99, .70);
         flor();
 
         glPushMatrix();
