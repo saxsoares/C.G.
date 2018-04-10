@@ -27,7 +27,7 @@ GLint sw, sh, winPosX, winPosY;
 GLfloat w_width, w_height;
 GLfloat mouseX, mouseY, mouseClickX, mouseClickY;
 
-GLfloat rot_pet=0, rot_roda=0, transl_car=0, brEsq=0, brDIr=0, antEsq=0, antDir=0;
+GLfloat rot_pet=0, rot_roda=0, transl_car=0, brEsq=0, brDIr=0, antEsq=0, antDir=0, rotPE=0, rotPD=0,rotPE2=0, rotPD2=0;
 
 void FitWindow(GLsizei w, GLsizei h){
      if (w >= h)
@@ -92,11 +92,19 @@ void Keyboard (unsigned char key, int x, int y){
         case 'q' :  brEsq = brEsq <= 9.0 ? brEsq + 1: brEsq;  break;
         case 'Q' :  brEsq = brEsq >= -113.0 ? brEsq - 1: brEsq;  break;
         case 'e' :  brDIr = brDIr <= 81.0 ? brDIr + 1: brDIr;  break;
-        case 'E' :  brDIr = brDIr >= -48.0 ? brDIr - 1: brDIr;;  break;
-        case 'z' :  antEsq = antEsq <= 93.0 ? antEsq + 1: antEsq;;  break;
-        case 'Z' :  antEsq = antEsq >= -120.0 ? antEsq - 1: antEsq;;  break;
-        case 'c' :  antDir = antDir <= 208.0 ? antDir + 1: antDir;;  break;
-        case 'C' :  antDir = antDir >= 0.0 ? antDir - 1: antDir;;  break;
+        case 'E' :  brDIr = brDIr >= -48.0 ? brDIr - 1: brDIr;  break;
+        case 'z' :  antEsq = antEsq <= 93.0 ? antEsq + 1: antEsq;  break;
+        case 'Z' :  antEsq = antEsq >= -120.0 ? antEsq - 1: antEsq;  break;
+        case 'c' :  antDir = antDir <= 208.0 ? antDir + 1: antDir;  break;
+        case 'C' :  antDir = antDir >= 0.0 ? antDir - 1: antDir;  break;
+        case 'W' :  rotPE = rotPE <= 90 ? rotPE + 1: rotPE;  break;
+        case 'w' :  rotPE = rotPE > 0.0 ? rotPE - 1: rotPE;  break;
+        case 'S' :  rotPD = rotPD < 0 ? rotPD + 1: rotPD;  break;
+        case 's' :  rotPD = rotPD >= -90.0 ? rotPD - 1: rotPD;  break;
+        case 'T' :  rotPE2 = rotPE2 >= -90 ? rotPE2 - 1: rotPE2;  break;
+        case 't' :  rotPE2 = rotPE2 < 0.0 ? rotPE2 + 1: rotPE2;  break;
+        case 'G' :  rotPD2 = rotPD2 > 0 ? rotPD2 - 1: rotPD2;  break;
+        case 'g' :  rotPD2 = rotPD2 <= 90.0 ? rotPD2 + 1: rotPD2;  break;
         default :
         printf("BE: %.1f - BD: %.1f - AE: %.1f - AD: %.1f\n", brEsq, brDIr, antEsq, antDir);
         break;
@@ -302,6 +310,35 @@ void robo(){
                 glRectf(-.2, .035, -.25, -.035);
             glPopMatrix();
         glPopMatrix();
+    glPopMatrix();
+    // Pernas
+    glPushMatrix();
+        glTranslatef(-.1,-.6,0);
+        glRotatef(rotPD,0,0,1);
+        glRectf(0,0,.09,-.15);
+        glBegin(GL_POLYGON);
+        for (i=0;i<=60;i++) {
+            angulo= 2 * PI * i / 60.0;
+            glVertex2f(0.045*cos(angulo)+.045, 0.045*sin(angulo)-.15);
+        }
+        glEnd();
+
+        glRotatef(rotPD2,0,0,1);
+        glRectf(0,-.15,.09,-.3);
+    glPopMatrix();
+    glPushMatrix();
+        glTranslatef(.1,-.6,0);
+        glRotatef(rotPE,0,0,1);
+        glRectf(0,0,-.09,-.15);
+        glBegin(GL_POLYGON);
+        for (i=0;i<=60;i++) {
+            angulo= 2 * PI * i / 60.0;
+            glVertex2f(0.045*cos(angulo)-.045, 0.045*sin(angulo)-.15);
+        }
+        glEnd();
+
+        glRotatef(rotPE2,0,0,1);
+        glRectf(0,-.15,-.09,-.3);
     glPopMatrix();
 }
 void Desenha(){
