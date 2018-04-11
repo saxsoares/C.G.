@@ -97,10 +97,10 @@ void Keyboard (unsigned char key, int x, int y){
         case 'Z' :  antEsq = antEsq >= -120.0 ? antEsq - 1: antEsq;  break;
         case 'c' :  antDir = antDir <= 208.0 ? antDir + 1: antDir;  break;
         case 'C' :  antDir = antDir >= 0.0 ? antDir - 1: antDir;  break;
-        case 'W' :  rotPE = rotPE <= 90 ? rotPE + 1: rotPE;  break;
-        case 'w' :  rotPE = rotPE > 0.0 ? rotPE - 1: rotPE;  break;
-        case 'S' :  rotPD = rotPD < 0 ? rotPD + 1: rotPD;  break;
-        case 's' :  rotPD = rotPD >= -90.0 ? rotPD - 1: rotPD;  break;
+        case 'w' :  rotPE = rotPE <= 90 ? rotPE + 1: rotPE;  break;
+        case 'W' :  rotPE = rotPE > 0.0 ? rotPE - 1: rotPE;  break;
+        case 's' :  rotPD = rotPD < 0 ? rotPD + 1: rotPD;  break;
+        case 'S' :  rotPD = rotPD >= -90.0 ? rotPD - 1: rotPD;  break;
         case 'T' :  rotPE2 = rotPE2 >= -90 ? rotPE2 - 1: rotPE2;  break;
         case 't' :  rotPE2 = rotPE2 < 0.0 ? rotPE2 + 1: rotPE2;  break;
         case 'G' :  rotPD2 = rotPD2 > 0 ? rotPD2 - 1: rotPD2;  break;
@@ -251,7 +251,7 @@ void robo(){
     glEnd();
     glPopMatrix();
     // Articulacoes
-    glPolygonMode(GL_FRONT, GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glPushMatrix();
     glTranslatef(0,-.6,0);
     glBegin(GL_POLYGON);
@@ -264,6 +264,22 @@ void robo(){
         for (i=0;i<=60;i++) {
             angulo= 2 * PI * i / 60.0;
             glVertex2f(0.03*cos(angulo)+.144, 0.03*sin(angulo)+.22);
+        }
+    glEnd();
+    glBegin(GL_POLYGON);
+        glVertex2f(.1,0);
+        glVertex2f(.01,0);
+        for (i=180;i<=rotPE+180;i++) {
+            angulo= PI * i / 180.0;
+            glVertex2f(0.09*cos(angulo)+.1, 0.09*sin(angulo));
+        }
+    glEnd();
+    glBegin(GL_POLYGON);
+        glVertex2f(-.1,0);
+        glVertex2f(-.01,0);
+        for (i=360;i>=rotPD+360;i--) {
+            angulo= PI * i / 180.0;
+            glVertex2f(0.09*cos(angulo)-.1, 0.09*sin(angulo));
         }
     glEnd();
     glPopMatrix();
@@ -311,34 +327,45 @@ void robo(){
             glPopMatrix();
         glPopMatrix();
     glPopMatrix();
-    // Pernas
+    // Perna dir
     glPushMatrix();
         glTranslatef(-.1,-.6,0);
         glRotatef(rotPD,0,0,1);
         glRectf(0,0,.09,-.15);
+        glPolygonMode(GL_FRONT, GL_FILL);
         glBegin(GL_POLYGON);
         for (i=0;i<=60;i++) {
             angulo= 2 * PI * i / 60.0;
             glVertex2f(0.045*cos(angulo)+.045, 0.045*sin(angulo)-.15);
         }
         glEnd();
-
-        glRotatef(rotPD2,0,0,1);
-        glRectf(0,-.15,.09,-.3);
+        glPolygonMode(GL_FRONT, GL_LINE);
+        glPushMatrix();
+            glTranslatef(.045,-.15,0);
+            glRotatef(rotPD2,0,0,1);
+            glTranslatef(-.045,.15,0);
+            glRectf(0,-.15,.09,-.3);
+        glPopMatrix();
     glPopMatrix();
+    // Perna Esq
     glPushMatrix();
         glTranslatef(.1,-.6,0);
         glRotatef(rotPE,0,0,1);
         glRectf(0,0,-.09,-.15);
+        glPolygonMode(GL_FRONT, GL_FILL);
         glBegin(GL_POLYGON);
         for (i=0;i<=60;i++) {
             angulo= 2 * PI * i / 60.0;
             glVertex2f(0.045*cos(angulo)-.045, 0.045*sin(angulo)-.15);
         }
         glEnd();
-
-        glRotatef(rotPE2,0,0,1);
-        glRectf(0,-.15,-.09,-.3);
+        glPolygonMode(GL_FRONT, GL_LINE);
+        glPushMatrix();
+            glTranslatef(-.045,-.15,0);
+            glRotatef(rotPE2,0,0,1);
+            glTranslatef(.045,.15,0);
+            glRectf(0,-.15,-.09,-.3);
+        glPopMatrix();
     glPopMatrix();
 }
 void Desenha(){
@@ -349,6 +376,10 @@ void Desenha(){
         Msg("'Z'/'z' para movimentar antebraço esq", -.99, .80);
         Msg("'E'/'e' para movimentar braço dir", -.99, .75);
         Msg("'C'/'c' para movimentar antebraço dir", -.99, .70);
+        Msg("'W'/'w' para movimentar coxa dir", -.99, .65);
+        Msg("'T'/'t' para movimentar perna dir", -.99, .60);
+        Msg("'S'/'s' para movimentar coxa Esq", -.99, .55);
+        Msg("'G'/'g' para movimentar perna esq", -.99, .50);
         flor();
 
         glPushMatrix();
